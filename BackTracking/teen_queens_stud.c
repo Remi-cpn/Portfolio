@@ -6,7 +6,7 @@
 /*   By: rcompain <rcompain@student.42angouleme.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/30 15:23:02 by rcompain          #+#    #+#             */
-/*   Updated: 2025/11/12 12:37:10 by rcompain         ###   ########.fr       */
+/*   Updated: 2025/11/19 09:57:33 by rcompain         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,7 +58,7 @@ int	clues(int y, int x, char chessboard[11][11])
 	i = 0;
 	while (i < 10)
 	{
-		if(chessboard[y][i] == '1' || chessboard[i][x] == '1')
+		if (chessboard[y][i] == '1' || chessboard[i][x] == '1')
 			return (0);
 		i++;
 	}
@@ -75,12 +75,13 @@ int	clues(int y, int x, char chessboard[11][11])
 }
 
 /**
- * This recursive backtracking fonction browes line by line and return all solutions.
+ * This recursive backtracking fonction browes line by line and return 
+ * all solutions.
  */
 int	algo(int y, char chessboard[11][11], char	*str)
 {
-	int	x;
-	static int count = 0;
+	int			x;
+	static int	count = 0;
 
 	if (y > 9)
 	{

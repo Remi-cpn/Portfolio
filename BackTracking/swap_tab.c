@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   print_n_binary.c                                   :+:      :+:    :+:   */
+/*   swap_tab.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: rcompain <rcompain@student.42angouleme.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/11/18 10:46:58 by rcompain          #+#    #+#             */
-/*   Updated: 2025/11/18 11:18:06 by rcompain         ###   ########.fr       */
+/*   Created: 2025/11/18 11:21:46 by rcompain          #+#    #+#             */
+/*   Updated: 2025/11/19 09:55:28 by rcompain         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,17 +14,40 @@
 #include <stdlib.h>
 #include <unistd.h>
 
-void	algo(int n, int index, char *str)
+static int	check(int v, char *str)
 {
+	int	i;
+
+	i = 0;
+	while (str[i])
+	{
+		if (str[i] == v + '0')
+			return (0);
+		i++;
+	}
+	return (1);
+}
+
+void	swap_tab(int n, int index, char *str)
+{
+	int	v;
+
 	if (index == n)
 	{
 		printf("%s\n", str);
 		return ;
 	}
-	str[index] = '0';
-	algo(n, index + 1, str);
-	str[index] = '1';
-	algo(n, index + 1, str);
+	v = 1;
+	while (v <= n)
+	{
+		if (check(v, str))
+		{
+			str[index] = v + '0';
+			swap_tab(n, index + 1, str);
+			str[index] = '0';
+		}
+		v++;
+	}
 }
 
 int	main(int ac, char **av)
@@ -39,7 +62,5 @@ int	main(int ac, char **av)
 	str = calloc(atoi(av[1]) + 1, sizeof(char));
 	if (!str)
 		return (-1);
-	algo(atoi(av[1]), 0, str);
-	free(str);
-	str = NULL;
+	swap_tab(atoi(av[1]), 0, str);
 }
