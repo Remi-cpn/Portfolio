@@ -1,21 +1,42 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   teen_queens_stud.c                                 :+:      :+:    :+:   */
+/*   n_queens.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: rcompain <rcompain@student.42angouleme.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/30 15:23:02 by rcompain          #+#    #+#             */
-/*   Updated: 2025/11/19 09:57:33 by rcompain         ###   ########.fr       */
+/*   Updated: 2025/11/19 10:42:42 by rcompain         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <unistd.h>
+#include <stdlib.h>
+
+/**
+ * This fonction free all alocations.
+ */
+static void	free_all(char **chessboard, char *str)
+{
+	int	i;
+
+	free(str);
+	str = NULL;
+	i = 0;
+	while (chessboard[i])
+	{
+		free(chessboard[i]);
+		chessboard[i] = NULL;
+		i++;
+	}
+	free(chessboard);
+	chessboard = NULL;
+}
 
 /**
  * This fonction write a string on fd 1.
  */
-void	putstr(char *str)
+static void	putstr(char *str)
 {
 	int	i;
 
@@ -26,37 +47,15 @@ void	putstr(char *str)
 }
 
 /**
- * This fonction init array.
- */
-void	ft_init_chessboard(char chessboard[11][11])
-{
-	int	x;
-	int	y;
-
-	y = 0;
-	while (y < 10)
-	{
-		x = 0;
-		while (x < 10)
-		{
-			chessboard[y][x] = '.';
-			x++;
-		}
-		chessboard[y][x] = '\0'; 
-		y++;
-	}
-}
-
-/**
  * This fonction control the queen precence on the line, the column and diagonals
  * from a position in array.
  */
-int	clues(int y, int x, char chessboard[11][11])
+static int	clues(int y, int x, char **chessboard, int n)
 {
 	int	i;
 
 	i = 0;
-	while (i < 10)
+	while (i < n)
 	{
 		if (chessboard[y][i] == '1' || chessboard[i][x] == '1')
 			return (0);
@@ -65,7 +64,7 @@ int	clues(int y, int x, char chessboard[11][11])
 	i = 1;
 	while (i <= y)
 	{
-		if (x + i < 10 && chessboard[y - i][x + i] == '1')
+		if (x + i < n && chessboard[y - i][x + i] == '1')
 			return (0);
 		if (x - i >= 0 && chessboard[y - i][x - i] == '1')
 			return (0);
@@ -78,24 +77,24 @@ int	clues(int y, int x, char chessboard[11][11])
  * This recursive backtracking fonction browes line by line and return 
  * all solutions.
  */
-int	algo(int y, char chessboard[11][11], char	*str)
+static int	algo(int y, char **chessboard, char	*str, int n)
 {
 	int			x;
 	static int	count = 0;
 
-	if (y > 9)
+	if (y > n - 1)
 	{
 		putstr(str);
 		return (count++);
 	}
 	x = 0;
-	while (x < 10)
+	while (x < n)
 	{
-		if (clues(y, x, chessboard))
+		if (clues(y, x, chessboard, n))
 		{
 			chessboard[y][x] = '1';
 			str[y] = x + 48;
-			algo(y + 1, chessboard, str);
+			algo(y + 1, chessboard, str, n);
 			chessboard[y][x] = '0';
 		}
 		x ++;
@@ -103,25 +102,43 @@ int	algo(int y, char chessboard[11][11], char	*str)
 	return (count);
 }
 
-int	ft_ten_queens_puzzle(void)
+/**
+ * This fonction is the main fonction.
+ */
+int	ft_n_queens_puzzle(int n)
 {
-	char	chessboard[11][11];
+	char	**chessboard;
+	int		i;
 	int		y;
 	int		count;
-	char	str[11];
+	char	*str;
 
-	ft_init_chessboard(chessboard);
+	chessboard = calloc(n + 1, sizeof(char *));
+	i = 0;
+	while (i < n)
+	{
+		chessboard[i] = calloc(n + 1, sizeof(char));
+		i++;
+	}
+	str = calloc(n + 1, sizeof(char));
 	y = 0;
-	str[0] = '\0';
-	count = algo(y, chessboard, str);
+	count = algo(y, chessboard, str, n);
+	free_all(chessboard, str);
 	return (count);
 }
 /**
-int	main(void)
+#include <stdio.h>
+
+int	main(int ac, char **av)
 {
 	int	count;
 
-	count = ft_ten_queens_puzzle();
-	printf("-> Nombre de solutions = >%d<", count);
-}
-*/
+	if (ac == 1)
+	{
+		write(2, "Arg ?", 5);
+		return (-1);
+	}
+	count = ft_n_queens_puzzle(atoi(av[1]));
+	printf("-> Nombre de solutions = >%d<\n", count);
+}*/
+
